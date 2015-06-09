@@ -3,9 +3,6 @@ import time
 
 # For this particular PIR, pin is pulled low if motion is detected. 
 # Output pin requires PULL_UP
-
-
-
 def getmovement(pin, time=False):
     """Get status of GPIO pin with motion sensor without interrupt checking
  
@@ -15,6 +12,7 @@ def getmovement(pin, time=False):
             False(default) to return only state of PIR sensor
     
     Returns: (bool, time(optional))
+    Pins need to be cleaned using GPIO.cleanup()
     """
 
     # Set BCM Numbering for GPIO Pins
