@@ -3,7 +3,8 @@ import time
 
 # For this particular PIR, pin is pulled low if motion is detected. 
 # Output pin requires PULL_UP
-def getmovement(pin, time=False):
+def getmovement(pin, timestamp=False):
+
     """Get status of GPIO pin with motion sensor without interrupt checking
  
     Keyword Arguments:
@@ -14,20 +15,30 @@ def getmovement(pin, time=False):
     Returns: (bool, time(optional))
     Pins need to be cleaned using GPIO.cleanup()
     """
-
-    # Set BCM Numbering for GPIO Pins
-    GPIO.setmode(GPIO.BCM)
-    # Set GPIO to input mode
-    GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    
     # Current state of GPIO pin
     currentstate = GPIO.input(pin)
     # Return sensor state if time=true
-    if time=True:
+    if timestamp==True:
         return (currentstate,time.localtime())
     else:
         return (currentstate)
 
+if __name__ == "__main__":
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(14, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    
+    try:
+        while True:
+            input("Press enter to get sensor state and timestamp...")
+            (state, timestamp) = getmovement(14, timestamp=True)
+            if(state):
+                print("No motion at {0.tm_hour}:{0.tm_min:02d}:{0.tm_sec:02d}".format(timestamp, state))
+            else:
+                print("Motion at {0.tm_hour}:{0.tm_min:02d}:{0.tm_sec:02d}".format(timestamp, state))
+ 
+    except(KeyboardInterrupt):
+        print("\nProgram Killed")
+   
         
         
 
