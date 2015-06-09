@@ -1,6 +1,7 @@
-import RPi.GPIO as GPIO
-import time
 import os
+import RPi.GPIO
+import time
+
 
 # GPIO input pin for sensor
 pin = 14
