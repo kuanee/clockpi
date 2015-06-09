@@ -1,5 +1,6 @@
-﻿import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
+
 
 output = 14
 
@@ -18,9 +19,9 @@ while True:
 	current_state =GPIO.input(output)
 	if current_state != previous_state:
 		if not(current_state):
-			print("Motion Detected")
+			print("Pin state:{0}".format(current_state))
 		else:
-			print("No Movement")
+			print("Pin state:{0}".format(current_state))
 
 GPIO.cleanup()
 
