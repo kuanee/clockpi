@@ -5,9 +5,10 @@ import time
 
 # GPIO input pin for sensor
 pin = 14
-# Time in between detections
+# Time in between detections in miliseconds
 btime = 5000
-
+# Autosave time in seconds
+save = 60
 def writelog(pin):
     print("Motion detected on pin#{0}".format(pin))
     log.write('Motion detected at {0.tm_hour}:{0.tm_min:02d}:{0.tm_sec:02d}\n'.format(time.localtime()))
@@ -31,10 +32,17 @@ GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # Write log whenever motion is detected
 try:
     log = open('{0}.log'.format(filenumber), mode='a', encoding='utf-8')
+    # Write date at top of file
     log.write('{0.tm_mday}\{0.tm_mon}\{0.tm_year}\n'.format(time.localtime()))
     GPIO.add_event_detect(pin, GPIO.FALLING, callback=writelog, bouncetime=btime)
     while True:
-        pass
+# save every minute
+        time.sleep(save)
+        remove_event_detect(pin)
+        log.close
+        log = open('{0}.log'.format(filenumber), mode='a', encoding='utf-8')
+        GPIO.add_event_detect(pin, GPIO.FALLING, callback=writelog, bouncetime=btime)
+        print("File saved and opened successfully")
 except (KeyboardInterrupt):
     GPIO.cleanup()
     print("\nKeyboardInterrupt Detected.")
