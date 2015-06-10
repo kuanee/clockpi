@@ -15,11 +15,13 @@ def writelog(pin):
 # Create directory at home/pi if it does not exist
 os.makedirs(os.path.expanduser('~/sleeplog'),exist_ok=True)
 """
-# Change Directory to sleeplog foder
-os.chdir('sleeplog')
+# Make and Change Directory to sleeplog foder
+os.makedirs('/home/pi/sleeplog', exist_ok=True)
+os.chdir('/home/pi/sleeplog')
+
 #Use new filenumber of form log# everytime
 filenumber = 0
-while (os.path.isfile("{}.log".format(filenumber))):
+while (os.path.isfile("{0}.log".format(filenumber))):
     filenumber = filenumber + 1
 
 # Set up GPIO input
@@ -28,7 +30,7 @@ GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Write log whenever motion is detected
 try:
-    log = open('{0}.log'.format(filenumber), mode='w', encoding='utf-8')
+    log = open('{0}.log'.format(filenumber), mode='a', encoding='utf-8')
     log.write('{0.tm_mday}\{0.tm_mon}\{0.tm_year}\n'.format(time.localtime()))
     GPIO.add_event_detect(pin, GPIO.FALLING, callback=writelog, bouncetime=btime)
     while True:
@@ -36,6 +38,13 @@ try:
 except (KeyboardInterrupt):
     GPIO.cleanup()
     print("\nKeyboardInterrupt Detected.")
+    print("All GPIOs cleaned up.")
+    log.close
+    print("Log succesfully saved as {0}".format(log.name))
+    print("Succesfully exited")
+
+except:
+    GPIO.cleanup()
     print("All GPIOs cleaned up.")
     log.close
     print("Log succesfully saved as {0}".format(log.name))
